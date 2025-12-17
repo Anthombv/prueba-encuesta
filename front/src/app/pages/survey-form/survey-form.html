@@ -1,0 +1,43 @@
+<div style="max-width: 900px; margin: 24px auto; padding: 0 12px;">
+  <h1>Encuesta</h1>
+
+  <div *ngIf="loading">Cargando preguntas...</div>
+
+  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="submit()">
+
+    <div *ngFor="let c of categories"
+         style="margin: 20px 0; padding: 16px; border: 1px solid #ddd; border-radius: 10px;">
+
+      <h2>{{ c.categoryName }} ({{ c.categoryCode }})</h2>
+
+      <div *ngFor="let q of c.questions"
+           style="margin: 14px 0; padding-top: 10px; border-top: 1px solid #eee;">
+
+        <div style="font-weight: 600; margin-bottom: 8px;">
+          {{ q.text }}
+        </div>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <label *ngFor="let n of q.range"
+                 style="display:flex; gap:6px; align-items:center;">
+            <input type="radio"
+                   [formControlName]="ctrlName(q.id)"
+                   [value]="n" />
+            {{ n }}
+          </label>
+        </div>
+
+        <div *ngIf="form.get(ctrlName(q.id))?.touched && form.get(ctrlName(q.id))?.invalid"
+             style="color:#c00; margin-top:6px;">
+          Selecciona un valor entre {{ q.minValue }} y {{ q.maxValue }}
+        </div>
+
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="saving" style="padding:10px 16px;">
+      {{ saving ? 'Guardando...' : 'Enviar encuesta' }}
+    </button>
+
+  </form>
+</div>
